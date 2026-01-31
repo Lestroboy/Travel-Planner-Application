@@ -1,0 +1,5 @@
+package com.travelplanner.auth.controller;
+
+public class AuthController {
+
+}

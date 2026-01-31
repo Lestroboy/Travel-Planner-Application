@@ -1,0 +1,21 @@
+.auth-container {
+  max-width: 320px;
+  margin: 40px auto;
+}
+
+.auth-container input,
+.auth-container button {
+  width: 100%;
+  margin: 8px 0;
+  padding: 8px;
+}
+
+.auth-link {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.auth-link a {
+  text-decoration: none;
+  color: #007bff;
+}

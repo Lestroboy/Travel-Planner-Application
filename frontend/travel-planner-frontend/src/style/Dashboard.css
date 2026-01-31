@@ -1,0 +1,9 @@
+.auth-link {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.auth-link a {
+  text-decoration: none;
+  color: #007bff;
+}

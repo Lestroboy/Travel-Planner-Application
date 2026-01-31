@@ -1,0 +1,5 @@
+package com.travelplanner.auth.service;
+
+public class AuthService {
+
+}

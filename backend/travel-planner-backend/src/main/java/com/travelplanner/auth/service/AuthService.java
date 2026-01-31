@@ -1,0 +1,82 @@
+package com.travelplanner.auth.service;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.travelplanner.auth.dto.AuthResponse;
+import com.travelplanner.auth.dto.LoginRequest;
+import com.travelplanner.auth.dto.RegisterRequest;
+import com.travelplanner.auth.entity.User;
+import com.travelplanner.auth.repository.UserRepository;
+import com.travelplanner.security.JwtUtil;
+
+@Service
+public class AuthService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       JwtUtil jwtUtil,
+                       AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
+    }
+
+    // Register logic
+    public AuthResponse register(RegisterRequest request) {
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("ROLE_USER");
+
+        userRepository.save(user);
+
+        return new AuthResponse(
+                "User registered successfully",
+                user.getEmail(),
+                user.getName(),
+                null
+        );
+    }
+
+    // Login logic with AuthenticationManager + JWT
+    public AuthResponse login(LoginRequest request) {
+
+        // Authenticate with Spring Security
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        // If authentication succeeds, generate token
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String token = jwtUtil.generateToken(userDetails.getUsername());
+
+        User user = userRepository.findByEmail(userDetails.getUsername()).get();
+
+        return new AuthResponse(
+                "Login successful",
+                user.getEmail(),
+                user.getName(),
+                token
+        );
+    }
+}

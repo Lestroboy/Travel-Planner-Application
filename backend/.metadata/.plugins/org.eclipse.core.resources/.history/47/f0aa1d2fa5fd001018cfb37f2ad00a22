@@ -1,0 +1,28 @@
+package com.travelplanner.auth.dto;
+
+public class AuthResponse {
+
+    private String message;
+    private String email;
+    private String name;
+
+    // Constructor
+    public AuthResponse(String message, String email, String name) {
+        this.message = message;
+        this.email = email;
+        this.name = name;
+    }
+
+    // Getters
+    public String getMessage() {
+        return message;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+}

@@ -1,0 +1,5 @@
+package com.travelplanner.auth.repository;
+
+public class UserRepository {
+
+}
