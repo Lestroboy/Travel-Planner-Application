@@ -1,0 +1,38 @@
+package com.travelplanner.auth.controller;
+
+import jakarta.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.travelplanner.auth.dto.AuthResponse;
+import com.travelplanner.auth.dto.LoginRequest;
+import com.travelplanner.auth.dto.RegisterRequest;
+import com.travelplanner.auth.service.AuthService;
+
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = {"http://localhost:8081", "http://localhost:5173", "http://localhost:3000"}, allowCredentials = "true")
+public class AuthController {
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    // Register API
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+        AuthResponse response = authService.register(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // Login API
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
+}
